@@ -9,33 +9,9 @@ from flask_session import Session
 app = Flask(__name__)
 app.secret_key = '@dkjgfjgfhkj jxbjljv kjxgvljklkj'
 dir_path = os.path.dirname(os.path.realpath(__file__))
-# currentlocation = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(dir_path, 'static', 'files')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-#app.config.update(dict(PREFERRED_URL_SCHEME = 'https'))
-
-# config = {
-#   'host':'cc-final-server.mysql.database.azure.com',
-#   'user':'aravindsqlserver@cc-final-server',
-#   'password':'aravind@123',
-#   'database':'ccfinaldb',
-#   'port': 3306,
-#   'ssl_ca': os.path.join(dir_path, 'ssl', 'BaltimoreCyberTrustRoot.crt.pem'),
-#   'ssl_verify_cert': 'true',
-#   'connect_timeout':50
-# }
-
-# config = {
-#   'host':'cc-mysql-server.mysql.database.azure.com',
-#   'user':'mysql@cc-mysql-server',
-#   'password':'Akhil@123',
-#   'database':'cc_project',
-#   'port': 3306,
-#   'ssl_ca': os.path.join(dir_path, 'ssl', 'BaltimoreCyberTrustRoot.crt.pem'),
-#   'ssl_verify_cert': 'true',
-#   'connect_timeout':50
-# }
 
 config = {
   'host':'ccmysqlserver.mysql.database.azure.com',
@@ -43,9 +19,7 @@ config = {
   'password':'Rupa@123',
   'database':'cc_project',
   'port':3306,
-  # 'client_flags': [mysql.connector.ClientFlag.SSL],
   'ssl_ca': os.path.join(dir_path,'ssl','BaltimoreCyberTrustRoot.crt.pem'),
-#   'ssl_verify_cert': 'true',
   'connect_timeout':50000
 }
 
@@ -64,7 +38,6 @@ def homepage():
         print(username,password)
         cur.execute('SELECT * FROM users WHERE username = %s AND password = %s', (username, password, ))
         user = cur.fetchone()
-        # print(user)
         if user: 
             session['loggedin'] = True
             session['username'] = username
@@ -88,7 +61,6 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        # lastname = 'lastname'
         conn = mysql.connector.connect(**config)
         cur = conn.cursor()
         print(username, password, email)
@@ -172,18 +144,12 @@ def upload():
             hdata.save(file_path)
             col_names=['HSHD_NUM','L','AGE_RANGE','MARITAL','INCOME_RANGE','HOMEOWNER','HSHD_COMPOSITION','HH_SIZE','CHILDREN']
             csvData = pd.read_csv(file_path,names=col_names,header=0)
-            # print(csvData)
-            print("read household data")
-
-
             query='INSERT INTO households (HSHD_NUM,L,AGE_RANGE,MARITAL,INCOME_RANGE,HOMEOWNER,HSHD_COMPOSITION,HH_SIZE,CHILDREN) VALUES'
             for i,row in csvData.iterrows():
                 if(pd.isna(row['CHILDREN'])):
                     query += '{},'.format((row['HSHD_NUM'],row['L'],row['AGE_RANGE'],row['MARITAL'],row['INCOME_RANGE'],row['HOMEOWNER'],row['HSHD_COMPOSITION'],row['HH_SIZE'],'null'))
                 else :
                     query += '{},'.format((row['HSHD_NUM'],row['L'],row['AGE_RANGE'],row['MARITAL'],row['INCOME_RANGE'],row['HOMEOWNER'],row['HSHD_COMPOSITION'],row['HH_SIZE'],row['CHILDREN']))
-                
-                # print(value)
             query = query[:len(query)-1]
             cur.execute(query)
 
@@ -194,8 +160,6 @@ def upload():
             print("file path",file_path)
             col_names=['BASKET_NUM','HSHD_NUM','PURCHASE_','PRODUCT_NUM','SPEND','UNITS','STORE_R','WEEK_NUM','YEAR']
             csvData = pd.read_csv(file_path,names=col_names,header=0,nrows=10000)
-            print("read transaction data")
-            
             query='INSERT INTO transactions (BASKET_NUM,PURCHASE_,SPEND,UNITS,STORE_R,WEEK_NUM,YEAR,HSHD_NUM,PRODUCT_NUM) VALUES'
             for i,row in csvData.iterrows():
                 query += '{},'.format((row['BASKET_NUM'],row['PURCHASE_'],row['SPEND'],row['UNITS'],row['STORE_R'],row['WEEK_NUM'],row['YEAR'],row['HSHD_NUM'],row['PRODUCT_NUM']))
@@ -208,15 +172,12 @@ def upload():
             pdata.save(file_path)
             col_names=['PRODUCT_NUM','DEPARTMENT','COMMODITY','BRAND_TY','NATURAL_ORGANIC_FLAG']
             csvData = pd.read_csv(file_path,names=col_names,header=0)
-            print("read Products data")
-            
             query='INSERT INTO products (PRODUCT_NUM,DEPARTMENT,COMMODITY,BRAND_TYPE,NATURAL_ORGANIC_FLAG) VALUES'
             for i,row in csvData.iterrows():
                 query += '{},'.format((row['PRODUCT_NUM'],row['DEPARTMENT'],row['COMMODITY'],row['BRAND_TY'],row['NATURAL_ORGANIC_FLAG']))
             query = query[:len(query)-1]
             cur.execute(query)
             
-
             conn.commit()
             msg='Sucessfully Inserted data !!!!!'
             print(msg)
