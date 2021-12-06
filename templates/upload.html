@@ -9,40 +9,40 @@
         
     .btn {  
             float: right;
-            background-color: #4CAF50;
+            background-color: #ff00c873;
             color: white;
             padding: 10px 10px;
             margin-top: 1px;
             margin-right: 2px;
             border: none;
             text-decoration:none;
-         
+            border-radius: 30px;
             font-size: 15px; 
             
             }
             .btnsearch {  
-            background-color: #4CAF50;
+            background-color: gray;
             color: white;
             padding: 7px 7px;
             margin-top: 1px;
             margin-right: 2px;
             border: none;
             text-decoration:none;
-         
+            border-radius: 30px;
             font-size: 15px; 
             
             }
 
             .btns {  
             align-items: center;
-            background-color: #4CAF50;
+            background-color: #ff00c873;
             color: white;
-            padding: 10px 10px;
+            padding: 1rem 2rem;
             margin-top: 1px;
-            margin-right: 2px;
+            margin-right: 2rem;
             border: none;
             text-decoration:none;
-         
+            border-radius: 30px;
             font-size: 15px; 
             
             }
@@ -60,7 +60,7 @@
   width: 100%;
 }
 nav{
-    background-color: #563D7C;
+    background-color: black;
     color: #fff;
     padding: 30px 60px;
 }
@@ -70,8 +70,11 @@ nav{
   padding: 8px;
 }
 input[type=file] {
-  border: 2px solid  #4CAF50;
+  border: 2px solid  gray;
   border-radius: 4px;
+}
+table{
+  border-spacing: 0 30px;
 }
 
 #details tr:nth-child(even){background-color: #f2f2f2;}
@@ -94,8 +97,6 @@ input[type=file] {
     <div>
      <p><a class="btn" href="{{ url_for('logout')}}">logout</a></p> 
      
-        <br>
-        <br>
     </div>
  
     <div class="vertical-center">
@@ -113,13 +114,21 @@ input[type=file] {
 <div align="center" class="container"> 
     <form action = {{ url_for('upload') }} method="post" enctype="multipart/form-data">
         <table>
-        <label text-align: center;><b>Please upload Households Data </b></label>
-        <input type="file" name="households" required><br><br><br>
-        <label><b>Please upload Transactions Data</b></label>
-        <input type="file" name="transactions" required><br><br><br>
-        <label><b>Please upload Products Data </b></label>
-        <input type="file" name="products" required><br><br><br>
-        <input type="submit" class="btnsearch"  value=" Submit "><br><br>
+          <tr>
+        <td><label text-align: center;><b>Upload Households Data:   </b></label></td>
+        <td><input type="file" name="households" required></td>
+      </tr>
+      <tr>
+      <td><label><b>Upload Transactions Data:   </b></label></td>
+      
+    <td><input type="file" name="transactions" required></td>
+      </tr>
+      <tr>
+      <td><label><b>Upload Products Data:   </b></label></td>
+    <td><input type="file" name="products" required></td>
+      </tr>
+        </table>
+        <input type="submit" class="btnsearch"  value=" Submit ">
     </form>
     <div class="msg">{{ msg }}</div>
 <div>
